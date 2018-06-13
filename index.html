@@ -19,11 +19,13 @@
     </head>
     <body>
         <div class="container">
-            <h1>Bash cp implementation</h1>
+            <h1>Bash <code>cp</code> implementation</h1>
+
+            <p><a href='https://github.com/sukovanej/muni-unix-reseni'>The github solution repo!</a></p>
 
             <h2>Assigment</h2>
 
-            <p> The task was to create a bash script which behaves like a <code>cp</code> 
+            <p>The task was to create a bash script which behaves like a <code>cp</code> 
             program but the arguments are in reversed order. Example usage would by for
             example :</p>
 
@@ -33,6 +35,50 @@ copying file1 to file2
 $ cat file2
 test
 </code></pre>
+
+            <p>Also the script should be able to deal with variable number of arguments.
+            Generally <code>./D1.sh dir file1 file2 file3 #etc</code> should copy all the files
+            <code>file1</code>, <code>file2</code> and <code>file3</code> into <code>dir</code>
+            directory.</p>
+
+            <h2>Solution</h2>
+
+            <p>My solution is based on the <code>cat</code> command and stream redirection. The script
+            simply constructs the new path and redirects the <code>cat ${file_path}</code> to the new
+            path.</p>
+
+<pre><code>#!/bin/bash
+
+ARGS=("$@")
+DIR=${ARGS[0]}
+
+# some fancy formating
+bold=$(tput bold)
+normal=$(tput sgr0)
+green=$(tput setaf 2)
+
+if [[ $# == 2 ]];
+then
+    cat ${ARGS[1]} >> $DIR
+    echo "Copying $green$bold${ARGS[1]}$normal to $green$bold$DIR$normal"
+elif [[ $# > 2 ]];
+then
+    for i in $(seq 1 $(expr $# - 1));
+    do
+        cat ${ARGS[$i]} >> $DIR/${ARGS[$i]}
+        echo "Copying $green$bold${ARGS[$i]}$normal to $green$bold$DIR/${ARGS[$i]}$normal..."
+    done
+else
+    echo 'wrong usage'
+    echo 'usage: ./D1.sh dest source'
+    echo '       ./D1.sh dest [...] source'
+fi
+</code></pre>
+
+        <h2>Hurray!</h2>
+
+        <iframe src="https://giphy.com/embed/11sBLVxNs7v6WA" width="480" height="217" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/cheer-cheering-11sBLVxNs7v6WA">via GIPHY</a></p>
+
         </div>
     </body>
 </html>
